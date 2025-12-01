@@ -33,7 +33,7 @@ class NBADataCollector:
         )
 
         self.logger = logging.getLogger(__name__)
-        self.logger.info("NBA Data Collector initialized")
+        self.logger.info("NBA Data initialized")
 
     def _db_connection(self) -> None:
         try:
@@ -82,56 +82,30 @@ class NBADataCollector:
             self.logger.error(f"Cant create a table: {e}")
             raise
 
-    def existing_ids(self, season: str) -> set:
-        q = "SELECT DISTINCT game_id FROM historical_games WHERE season_id = ?"
-        try:
-            temp = pd.read_sql(q, self.conn, params=(season,))
-            existing_ids = set(temp['game_id'].tolist())
-            self.logger.debug(f"Found {len(existing_ids)} existing for {season}")
-            return existing_ids
-        except Exception as e:
-            self.logger.warning(f"Couldn't get existing IDs: {e}")
-            return set()
-
-    def collect_season_games(self, season: str) -> None:
-        self.logger.info(f"Collecting season: {season}")
-        
+    def latest_stored_date(self):
+        q = "SELECT MAX(game_date) FROM historical_games"
+        df = pd.read_sql(q, self.conn)
+        if df.iloc[0, 0] is None:
+            return None
+        return df.iloc[0, 0]
+    
+    def fetch_games(self, seasone):
         try:
             gamelog = leaguegamelog.LeagueGameLog(
-                season=season,
-                season_type_all_star='Regular Season',
-                player_or_team_abbreviation='T'
+                season = seasone,
+                season_type_all_star = 'Regular Season',
+                player_or_team_abbreviation = 'T'
             )
-            raw_data_from_api = gamelog.get_data_frames()[0]
-
-            if raw_data_from_api.empty:
-                self.logger.warning(f"API returned empty")
-                return
-            
-            self.logger.info(f"Got {len(raw_data_from_api)} records from API")
-            
+            df = gamelog.get_data_frames()[0]
+            if df.empty:
+                self.logger.info(f"No more data for {seasone}")
+                return pd.DataFrame()
+            df['SEASON_ID'] = seasone
+            return df
         except Exception as e:
-            self.logger.error(f"API failed: {e}")
-            return
-
-        raw_data_from_api['season_id'] = season
-
-        if 'GAME_DATE' not in raw_data_from_api.columns:
-            self.logger.error("Game date missing")
-            return
-        
-        transformed_data = self._transform_data(raw_data_from_api)
-
-        existing = self.existing_ids(season)
-        only_new_data = transformed_data[~transformed_data['game_id'].isin(existing)]
-        
-        if only_new_data.empty:
-            self.logger.info(f"No new games for {season}")
-            return
-        
-        self._save_games(only_new_data)
-        time.sleep(1.0)
-
+            self.logger.info("Failed to collect data {e}")
+            return pd.DataFrame()
+    
     def _transform_data(self, raw_data : pd.DataFrame) -> pd.DataFrame:
         result = raw_data.copy()
         
@@ -176,30 +150,70 @@ class NBADataCollector:
             'season_id', 'team_id', 'team_abbreviation', 'team_name',
             'game_id', 'game_date', 'matchup', 'outcome', 'points_scored',
             'field_goal_percentage', 'three_point_percentage', 'assists',
-            'rebounds', 'turnovers'
-        ]
+            'rebounds', 'turnovers']
         
         cols_to_store = [c for c in req_cols if c in data.columns]
-        opt_cols = ['is_home_game', 'offensive_rebounds', 'defensive_rebounds', 
-                    'steals', 'blocks', 'fouls', 'plus_minus', 'free_throw_percentage']
         
+        opt_cols = [
+            'is_home_game', 'offensive_rebounds', 'defensive_rebounds',
+            'steals', 'blocks','fouls','plus_minus', 'free_throw_percentage']
+
         for c in opt_cols:
             if c in data.columns:
                 cols_to_store.append(c)
-        
-        count = len(data)
-        
+
+        data = data[cols_to_store].copy()
+
         try:
-            data[cols_to_store].to_sql(
+            data.to_sql(
                 'historical_games',
                 self.conn,
-                if_exists='append',
-                index=False
-
+                if_exists = 'append',
+                index = False
             )
-            self.logger.info(f"Saved {count} records")
+            self.logger.info(f"Saved {len(data)} rows")
         except Exception as e:
-            self.logger.error(f"Save failed: {e}")
+            self.logger.info(f"Save failed: {e}")
+    
+    def update_all(self):
+        latest = self.latest_stored_date()
+
+        if latest is None:
+            self.logger.info("Collecting all seasons")
+
+            seasons = [f"{y}-{str(y+1)[-2:]}" for y in range(2020, 2026)]
+
+            for s in seasons:
+                df = self.fetch_games(s)
+                if df.empty:
+                    continue
+                trans = self._transform_data(df)
+                self._save_games(trans)
+                time.sleep(1)
+            return
+        
+        self.logger.info(f"Latest game in db: {latest}")
+
+        latest = datetime.strptime(latest, "%Y-%m-%d")
+        current =  datetime.today().year
+
+        to_check = [f"{current-1}-{str(current)[-2:]}",
+                    f"{current}-{str(current+1)[-2:]}"]
+
+        for s in to_check:
+            df = self.fetch_games(s)
+            if df.empty:
+                continue
+
+            df['GAME_DATE'] = pd.to_datetime(df['GAME_DATE'])
+            df = df[df['GAME_DATE'] > latest]
+
+            if df.empty:
+                continue
+
+            transformed = self._transform_data(df)
+            self._save_games(transformed)
+        self.logger.info("Updated")
 
     def close(self) -> None:
         if self.conn:
@@ -207,12 +221,7 @@ class NBADataCollector:
             self.logger.info("Connection closed")
 
 
-if __name__ == "__main__":
-    seasons = ['2021-22', '2022-23', '2023-24', '2024-25', '2025-26']
-    
+if __name__ == "__main__":    
     collector = NBADataCollector()
-    
-    for s in seasons:
-        collector.collect_season_games(s)
-    
+    collector.update_all()
     collector.close()
