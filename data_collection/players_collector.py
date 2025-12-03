@@ -3,7 +3,7 @@ import sqlite3
 import logging
 import time
 import os
-from datetime import datetime, timedelta
+from datetime import datetime
 from nba_api.stats.endpoints import leaguegamelog, commonallplayers
 
 BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
