@@ -19,3 +19,6 @@ pip install -r requirements.txt
 
 Before commiting run to save new dependencies:
 pip freeze > requirements.txt
+
+### Starting server
+run: python manage.py runserver
