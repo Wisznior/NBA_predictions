@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Upcoming NBA Predictions{% endblock %}
+
+{% block content %}
+
+    <h1>Upcoming NBA Match Predictions</h1>
+
+    {% for g in future_games %}
+        <div style="margin-bottom: 20px;">
+            <strong>{{ g.home_team }}</strong> vs <strong>{{ g.away_team }}</strong><br>
+            Date: {{ g.match_date }}<br>
+            Predicted Score:
+            {{ g.home_team }} {{ g.predicted_home }} - {{ g.predicted_away }} {{ g.away_team }}
+        </div>
+        <hr>
+    {% endfor %}
+
+{% endblock %}
+

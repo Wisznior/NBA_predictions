@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %}</title>
+    <style>
+        body {
+            font-family: Arial;
+            margin: 0;
+        }
+        nav {
+            background: #000000;
+            color: white;
+            padding: 10px;
+        }
+        nav a {
+            color: #fff;
+            margin-right: 15px;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 15px;
+            display: inline-block;
+            padding: 10px 10px;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        nav a.active {
+            background-color: rgb(206, 206, 2);
+            color: #000000;
+        }
+        .content {
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="{% url 'index' %}" class="{% if active == 'home' %}active{% endif %}">Predictions</a>
+    <a href="{% url 'history' %}" class="{% if active == 'history' %}active{% endif %}">Match History</a>
+</nav>
+
+<div class="content">
+    {% block content %}
+    {% endblock %}
+</div>
+
+</body>
+</html>
