@@ -1,0 +1,307 @@
+<!-- Below I list some of the webpages that was especially helpfull to create this animated vector graphic-->
+<!-- Source: https://www.w3schools.com/graphics/ -->
+<!-- Source: https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorials/SVG_from_scratch/Paths-->
+<!-- Source: https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Element/animate-->
+<!-- Source: https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Attribute/begin-->
+
+<svg id="website-logo" width="100%" height="100%" viewBox="0 0 100 100"   xmlns="http://www.w3.org/2000/svg"
+  version="1.1"
+  xmlns:xlink="http://www.w3.org/1999/xlink">
+    <circle cx="50" cy="50" r="46" stroke="black" stroke-width="3" fill="#6A3201" />
+
+    <line x1="3" y1="50" x2="97" y2="50" style="stroke:black;stroke-width:3" />
+    <line x1="50" y1="3" x2="50" y2="97" style="stroke:black;stroke-width:3" />
+
+    <path id="left-arc" fill="none" stroke="black" stroke-linecap="round" stroke-width="3" />
+    <path id="right-arc" fill="none" stroke="black" stroke-linecap="round" stroke-width="3" />
+
+    <path id="NBAHelpLine" d="M 25 50 A 25 25 0 0 1 75 50" fill="none"/>
+
+    <text fill="#FFFFFF" text-anchor="middle" font-size="20" font-weight="bold" font-family="Arial">
+        <textPath href="#NBAHelpLine" startOffset="50%">
+            NBA
+        </textPath>
+    </text>
+
+    <path id="ProphecyHelpLine" d="M 15 50 A 35 35 0 0 0 85 50" fill="none"/>
+
+    <text fill="#FFFFFF" text-anchor="middle" font-size="12" font-family="Arial">
+        <textPath href="#ProphecyHelpLine" startOffset="50%" textLength="100%">
+            PROPHECY
+        </textPath>
+    </text>
+    <!-- Connections from first line to first dot in second line-->
+    <line x1="35" y1="40" x2="50" y2="35" stroke="white" stroke-width="1">
+        <animate
+        attributeType="XML"
+        id="firstLineFirstDot"
+        attributeName="stroke"
+        values="red; white"
+        dur="0.5s"
+        begin="0s; secondLineSecondDot.end"/>
+    </line>
+    <line x1="35" y1="50" x2="50" y2="35" stroke="white" stroke-width="1">
+        <animate
+        attributeType="XML"
+        attributeName="stroke"
+        values="red; white"
+        dur="0.5s"
+        begin="0s; secondLineSecondDot.end" />
+    </line>
+    <line x1="35" y1="60" x2="50" y2="35" stroke="white" stroke-width="1">
+        <animate
+        attributeType="XML"
+        attributeName="stroke"
+        values="red; white"
+        dur="0.5s"
+        begin="0s; secondLineSecondDot.end" />
+    </line>
+
+    <!-- Connections from first line to second dot in second line-->
+    <line x1="35" y1="40" x2="50" y2="45" stroke="white" stroke-width="1">
+        <animate
+        attributeType="XML"
+        id="firstLineSecondDot"
+        attributeName="stroke"
+        values="red; white"
+        dur="0.5s"
+        begin="firstLineFirstDot.end" />
+    </line>
+    <line x1="35" y1="50" x2="50" y2="45" stroke="white" stroke-width="1">
+        <animate
+        attributeType="XML"
+        attributeName="stroke"
+        values="red; white"
+        dur="0.5s"
+        begin="firstLineFirstDot.end" />
+    </line>
+    <line x1="35" y1="60" x2="50" y2="45" stroke="white" stroke-width="1">
+        <animate
+        attributeType="XML"
+        attributeName="stroke"
+        values="red; white"
+        dur="0.5s"
+        begin="firstLineFirstDot.end" />
+    </line>
+
+    <!-- Connections from first line to third dot in second line-->
+    <line x1="35" y1="40" x2="50" y2="55" stroke="white" stroke-width="1">
+        <animate
+        attributeType="XML"
+        id="firstLineThirdDot"
+        attributeName="stroke"
+        values="red; white"
+        dur="0.5s"
+        begin="firstLineSecondDot.end" />
+    </line>
+    <line x1="35" y1="50" x2="50" y2="55" stroke="white" stroke-width="1">
+        <animate
+        attributeType="XML"
+        attributeName="stroke"
+        values="red; white"
+        dur="0.5s"
+        begin="firstLineSecondDot.end" />
+    </line>
+    <line x1="35" y1="60" x2="50" y2="55" stroke="white" stroke-width="1">
+        <animate
+        attributeType="XML"
+        attributeName="stroke"
+        values="red; white"
+        dur="0.5s"
+        begin="firstLineSecondDot.end" />
+    </line>
+
+    <!-- Connections from first line to fourth dot in second line-->
+    <line x1="35" y1="40" x2="50" y2="65" stroke="white" stroke-width="1">
+        <animate
+        attributeType="XML"
+        id="firstLineFourthDot"
+        attributeName="stroke"
+        values="red; white"
+        dur="0.5s"
+        begin="firstLineThirdDot.end" />
+    </line>
+    <line x1="35" y1="50" x2="50" y2="65" stroke="white" stroke-width="1">
+        <animate
+        attributeType="XML"
+        attributeName="stroke"
+        values="red; white"
+        dur="0.5s"
+        begin="firstLineThirdDot.end" />
+    </line>
+    <line x1="35" y1="60" x2="50" y2="65" stroke="white" stroke-width="1">
+        <animate
+        attributeType="XML"
+        attributeName="stroke"
+        values="red; white"
+        dur="0.5s"
+        begin="firstLineThirdDot.end" />
+    </line>
+
+    <!-- Connections from second line to first dot in third line-->
+    <line x1="50" y1="35" x2="65" y2="45" stroke="white" stroke-width="1">
+        <animate
+        attributeType="XML"
+        id="secondLineFirstDot"
+        attributeName="stroke"
+        values="red; white"
+        dur="0.5s"
+        begin="firstLineFourthDot.end" />
+    </line>
+    <line x1="50" y1="45" x2="65" y2="45" stroke="white" stroke-width="1">
+        <animate
+        attributeType="XML"
+        attributeName="stroke"
+        values="red; white"
+        dur="0.5s"
+        begin="firstLineFourthDot.end" />
+    </line>
+    <line x1="50" y1="55" x2="65" y2="45" stroke="white" stroke-width="1">
+        <animate
+        attributeType="XML"
+        attributeName="stroke"
+        values="red; white"
+        dur="0.5s"
+        begin="firstLineFourthDot.end" />
+    </line>
+    <line x1="50" y1="65" x2="65" y2="45" stroke="white" stroke-width="1">
+        <animate
+        attributeType="XML"
+        attributeName="stroke"
+        values="red; white"
+        dur="0.5s"
+        begin="firstLineFourthDot.end" />
+    </line>
+
+    <!-- Connections from second line to second dot in third line-->
+    <line x1="50" y1="35" x2="65" y2="55" stroke="white" stroke-width="1">
+        <animate
+        attributeType="XML"
+        id="secondLineSecondDot"
+        attributeName="stroke"
+        values="red; white"
+        dur="0.5s"
+        begin="secondLineFirstDot.end" />
+    </line>
+    <line x1="50" y1="45" x2="65" y2="55" stroke="white" stroke-width="1">
+        <animate
+        attributeType="XML"
+        attributeName="stroke"
+        values="red; white"
+        dur="0.5s"
+        begin="secondLineFirstDot.end" />
+    </line>
+    <line x1="50" y1="55" x2="65" y2="55" stroke="white" stroke-width="1">
+        <animate
+        attributeType="XML"
+        attributeName="stroke"
+        values="red; white"
+        dur="0.5s"
+        begin="secondLineFirstDot.end" />
+    </line>
+    <line x1="50" y1="65" x2="65" y2="55" stroke="white" stroke-width="1">
+        <animate
+        attributeType="XML"
+        attributeName="stroke"
+        values="red; white"
+        dur="0.5s"
+        begin="secondLineFirstDot.end" />
+    </line>
+
+    <!-- First vertical line of dots-->
+    <circle cx="35" cy="40" r="2.5" fill="white">
+    </circle>
+    <circle cx="35" cy="50" r="2.5" fill="white">
+    </circle>
+    <circle cx="35" cy="60" r="2.5" fill="white">
+    </circle>
+
+    <!-- Second vertical line of dots-->
+    <circle cx="50" cy="35" r="2.5" fill="white">
+        <animate
+        attributeType="XML"
+        attributeName="fill"
+        values="red; white"
+        dur="0.5s"
+        begin="0s; secondLineSecondDot.end" />
+    </circle>
+    <circle cx="50" cy="45" r="2.5" fill="white">
+        <animate
+        attributeType="XML"
+        attributeName="fill"
+        values="red; white"
+        dur="0.5s"
+        begin="firstLineFirstDot.end" />
+    </circle>
+    <circle cx="50" cy="55" r="2.5" fill="white">
+        <animate
+        attributeType="XML"
+        attributeName="fill"
+        values="red; white"
+        dur="0.5s"
+        begin="firstLineSecondDot.end" />
+    </circle>
+    <circle cx="50" cy="65" r="2.5" fill="white">
+        <animate
+        attributeType="XML"
+        attributeName="fill"
+        values="red; white"
+        dur="0.5s"
+        begin="firstLineThirdDot.end" />
+    </circle>
+
+    <!-- Third vertical line of dots-->
+    <circle cx="65" cy="45" r="2.5" fill="white">
+        <animate
+        attributeType="XML"
+        attributeName="fill"
+        values="red; white"
+        dur="0.5s"
+        begin="firstLineFourthDot.end" />
+    </circle>
+    <circle cx="65" cy="55" r="2.5" fill="white">
+        <animate
+        attributeType="XML"
+        attributeName="fill"
+        values="red; white"
+        dur="0.5s"
+        begin="secondLineFirstDot.end" />
+    </circle>
+</svg>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const logo = document.getElementById("website-logo");
+    const leftArc = document.getElementById("left-arc");
+    const rightArc = document.getElementById("right-arc");
+
+    console.log(leftArc);
+
+    const logoWidth = parseFloat(logo.getAttribute("width"));
+    const logoHeight = parseFloat(logo.getAttribute("height"));
+    const rx = 0.3 * logoWidth;
+    const ry = 0.3 * logoHeight;
+    const r = 0.46 * logoWidth;
+    const startY = 0.25 * logoHeight;
+    const endY = 0.75 * logoHeight;
+    const a = 0.5 * logoWidth;
+    const b = 0.5 * logoHeight;
+
+    // calculated using circle equation (x - a)^2 + (y - b)^2 = r^2 where (a,b) - midddle of the ball circle
+    const leftArcStartX = -Math.sqrt(r ** 2 - (startY - b) ** 2) + a;
+    const leftArcEndX = -Math.sqrt(r ** 2 - (endY - b) ** 2) + a;
+
+    leftArc.setAttribute(
+        "d",
+        `M ${leftArcStartX} ${startY} A ${rx} ${ry} 0 0 1 ${leftArcEndX} ${endY}`
+    );
+
+    const rightArcStartX = Math.sqrt(r ** 2 - (startY - b) ** 2) + a;
+    const rightArcEndX = Math.sqrt(r ** 2 - (endY - b) ** 2) + a;
+
+    rightArc.setAttribute(
+        "d",
+        `M ${rightArcStartX} ${startY} A ${rx} ${ry} 0 0 0 ${rightArcEndX} ${endY}`
+    );
+});
+</script>

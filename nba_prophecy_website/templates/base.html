@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% load static %}
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+
+    {% block extra_css %}{% endblock %}
+    <style>
+        
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="nav-left">
+        <div class="home-link {% if active == 'home' %}active{% endif %}">
+            <a href="{% url 'home' %}">
+                {% include 'components/logo.svg.html' %}
+            </a>
+        </div>
+    </div>
+    <div class="nav-center">
+        <div class=" link {% if active == 'future' %}active{% endif %}">
+            <a href="{% url 'future' %}" >Predictions</a>
+        </div>
+        <div class=" link {% if active == 'history' %}active{% endif %}">
+            <a href="{% url 'history' %}" >Predictions History</a>
+        </div>
+        <div class=" link {% if active == 'bets' %}active{% endif %}">
+            <a href="{% url 'bets' %}" >User Bets</a>
+        </div>
+    </div>
+    <div class="nav-right">
+        {% if user.is_authenticated %}
+            <div class="link">
+                <a href="{% url 'accounts/logout' %}" >Logout</a>
+            </div>
+        {% else %}
+            <div class="link">
+                <a href="{% url 'login' %}" >Login</a>
+            </div>
+            <div class="link">
+                <a href="{% url 'register' %}" >Register</a>
+            </div>
+        {% endif %}
+    </div>
+</nav>
+
+<div class="content">
+    {% block content %}
+    {% endblock %}
+</div>
+
+<footer>
+    <h1>Authors</h1>
+    <div id="authors">
+        <p>Wiszniowski Rafał</p>
+        <p>Madziara Stanisław</p>
+        <p>Amalio Bartosz</p>
+        <p>Kowalczyk Patryk</p>
+    </div>
+</footer>
+
+</body>
+</html>
