@@ -1,0 +1,14 @@
+{
+    "request":{
+        "sport": "basketball_nba",
+        "region": "eu",
+        "market": "h2h,spreads,totals",
+        "format": "decimal"
+    },
+    "options":{
+        "market": ["h2h","spreads","totals"],
+        "region": ["us", "uk", "eu", "au"],
+        "format": ["american", "decimal"]
+    }
+
+}
