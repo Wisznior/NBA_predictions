@@ -1,0 +1,49 @@
+{% extends "register_login_base.html" %}
+
+{% block title %}Register{% endblock %}
+
+{% block form %}
+    <h1>Register</h1>
+    <hr>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <div class="wrapper">
+            <div class="left-part">
+                <div>
+                    <label for="id_first_name">First Name</label><br>
+                    {{ form.first_name }}
+                </div>
+                <div>
+                    <label for="id_last_name">Last Name</label><br>
+                    {{ form.last_name }}
+                </div>
+                <div>
+                    <label for="id_username">Username</label><br>
+                    {{ form.username }}
+                </div>
+            </div>
+            <div class="right-part">
+                <div>
+                    <label for="id_email">Email</label><br>
+                    {{ form.email }}
+                </div>
+                <div>
+                    <label for="id_password1">Password</label><br>
+                    {{ form.password1 }}
+                </div>
+
+                <div>
+                    <label for="id_password2">Confirm Password</label><br>
+                    {{ form.password2 }}
+                </div>
+            </div>
+        </div>
+        <div class="register-button">
+            <button type="submit">Register</button>
+        </div>
+    </form>
+    <p>Already have an account? <a href="">Login here.</a></p>
+{% endblock %}
+

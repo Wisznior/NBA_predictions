@@ -1,0 +1,82 @@
+:root {
+    --element-background: #020122;
+    --selected-element: #EDD382;
+}
+
+html, body {
+    font-family: Arial;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-image: url('/static/accounts/img/half_court.svg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    justify-content: center;
+    background: var(--element-background);
+    color: white;
+    width: 600px;
+    margin: auto;
+    border-radius: 5vh;
+    padding: 20px;
+}
+.form .wrapper {
+    display: flex;
+    align-items: center; 
+    justify-content: center;
+    gap: 100px;
+    margin-top: 20px;
+}
+.form .left-part, .form .right-part {
+    display: flex;
+    align-items: center; 
+    flex-direction: column;
+    justify-content: center;
+    gap: 20px;
+}
+.form div div input {
+    margin: 10px 0;
+    height: 36px;
+    border-radius: 18px;
+    padding-left: 10px;
+}
+.form div div label {
+    font-size: 0.9em;
+}
+.form hr {
+    width: 70%;
+}
+.form .register-button {
+    display: flex;
+    align-items: center; 
+    justify-content: center;
+    margin: 20px;
+}
+.form .register-button button {
+    font-size: 17px;
+    height: 36px;
+    width: 100px;
+    border-radius: 18px;
+    background: var(--selected-element);
+    color: black;
+}
+.form .register-button button:hover {
+    cursor: pointer;
+}
+.form p {
+    font-size: 13px;
+}
+.form p a {
+    text-decoration: none;
+    color: var(--selected-element);
+}
+
