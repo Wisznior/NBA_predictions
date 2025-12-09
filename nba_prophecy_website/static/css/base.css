@@ -1,0 +1,113 @@
+:root {
+    --element-background: #020122;
+    --selected-element: #EDD382;
+}
+
+html, body {
+    font-family: Arial;
+    margin: 0;
+    background-image: url('../img/court.svg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+.content {
+    min-height: 80vh;
+    background: var(--element-background);
+    color: white;
+    width: 80vw;
+    margin: 20px auto;
+    border-radius: 5vh;
+    padding: 0 20px;
+}
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    color: white;
+}
+.nav-left,
+.nav-center,
+.nav-right {
+    background: var(--element-background);
+    display: flex;
+}
+.nav-center,
+.nav-right {
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    height: 6vh;
+    border-radius: 3vh;
+    padding: 0 0 0 10px;
+}
+.nav-left {
+    height: 15vh;
+    border-radius: 6vh;
+}
+.home-link {
+    border-radius: 8vh;
+}
+.link {
+    box-sizing: border-box;
+    display: flex;
+    height: 40px;
+    margin: 0 10px 0 0;
+    padding: 10px 20px;
+    border-radius: 25px;
+    align-items: center;
+}
+div.active {
+    background-color: var(--selected-element);
+}
+div.active a,
+div.active a:active,
+div.active a:visited 
+div.active a:hover {
+    pointer-events: none;
+    cursor: default;
+    text-decoration: none;
+    color: black;
+}
+.link a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 20px;
+    font-weight: bold;
+    display: inline-block;
+}
+.link a:hover {
+    text-decoration: underline;
+}
+.content {
+    padding: 20px;
+}
+#authors {
+    padding: 10px;
+}
+
+#authors p {
+    display: inline-block;
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 17px;
+    border-left: 2px solid;
+    border-right: 2px solid;
+}
+#authors p:hover {
+    background: white;
+    color: black;
+}
+
+footer {
+    width: 80vw;
+    background: var(--element-background);
+    color: white;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 5vh;
+    text-align: center;
+}

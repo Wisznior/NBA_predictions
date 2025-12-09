@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% load static %}
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'accounts/css/register_login_base.css' %}">
+
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+{% block form %}
+{% endblock %}
+
+</body>
+</html>

@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from datetime import date
 
-def index(request):
+def future(request):
 
     #future games and predictions for testing
     future_games =[
@@ -14,9 +14,9 @@ def index(request):
         {"home_team": "Grizzlies", "away_team": "Hawks", "match_date": date.today().isoformat(), "predicted_home": 117, "predicted_away": 108,},
     ]
 
-    return render(request, "index.html", {
+    return render(request, "future.html", {
         "future_games": future_games,
-        "active": "home",
+        "active": "future",
     })
 
 def history(request):
