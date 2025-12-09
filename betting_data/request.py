@@ -9,7 +9,7 @@ logging.basicConfig(
     datefmt='%H:%M:%S'
 )
 
-def request_odds_api():
+def request_odds_api(file_out):
     try:
         with open("parameters.json", "r") as f:
             params = json.load(f)
@@ -36,7 +36,7 @@ def request_odds_api():
         data = response.json()
         logging.info(f"pulled {len(data)} games")
 
-        with open('full_data.json', 'w') as f:
+        with open(file_out, 'w') as f:
             json.dump(data, f, indent=4) 
             logging.info("save succesful")
 

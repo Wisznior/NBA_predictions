@@ -6,6 +6,9 @@ __pycache__/
 # C extensions
 *.so
 
+# The Odds API configuration
+config.py
+
 # Distribution / packaging
 .Python
 build/
@@ -224,3 +227,7 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+betting_data/parsed_data.json
+betting_data/parsed_data_new.json
+betting_data/full_data.json
+betting_data/full_data_new.json
