@@ -25,7 +25,7 @@ with open("full_data.json", "r") as f:
                     spread["away_point"].append(q["outcomes"][1]["point"])
                 elif q["key"] == "totals":
                     total["over_price"].append(q["outcomes"][0]["price"])
-                    total["under_price"].append(q["outcomes"][1]["point"])
+                    total["under_price"].append(q["outcomes"][1]["price"])
                     total["point"].append(q["outcomes"][0]["point"])
 
         games.append({"id": i["id"], "home_team":home_team, "away_team": away_team, "h2h": h2h, "spread": spread, "total": total})
