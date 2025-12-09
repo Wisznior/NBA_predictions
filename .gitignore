@@ -64,6 +64,10 @@ local_settings.py
 db.sqlite3
 db.sqlite3-journal
 
+# Generated data files
+data/*.db
+data/*.csv
+
 # Flask stuff:
 instance/
 .webassets-cache
@@ -174,6 +178,9 @@ venv.bak/
 .mypy_cache/
 .dmypy.json
 dmypy.json
+
+# Work planner
+B_work_plan.md
 
 # Pyre type checker
 .pyre/
