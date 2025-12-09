@@ -65,6 +65,9 @@ db.sqlite3-journal
 data/*.db
 data/*.csv
 
+# Generated model files
+*.joblib
+
 # Flask stuff:
 instance/
 .webassets-cache

@@ -3,13 +3,17 @@ certifi==2025.11.12
 charset-normalizer==3.4.4
 Django==5.2.9
 idna==3.11
+joblib==1.5.2
 nba_api==1.11.3
 numpy==2.3.5
 pandas==2.3.3
 python-dateutil==2.9.0.post0
 pytz==2025.2
 requests==2.32.5
+scikit-learn==1.7.2
+scipy==1.16.3
 six==1.17.0
 sqlparse==0.5.4
+threadpoolctl==3.6.0
 tzdata==2025.2
 urllib3==2.5.0
