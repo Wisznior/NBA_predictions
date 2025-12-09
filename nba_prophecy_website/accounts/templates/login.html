@@ -1,0 +1,40 @@
+{% extends "register_login_base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block form %}
+    <div class="login-form">
+        <h1>Login</h1>
+        <hr>
+
+        <div class="wrapper">
+            <form method="POST">
+                {% csrf_token %}
+                <div>
+                    <div>
+                        <label for="id_username">Username</label><br>
+                        {{ form.username }}
+                    </div>
+                    <div>
+                        <label for="id_password">Password</label><br>
+                        {{ form.password }}
+                    </div>
+                </div>
+                <div>
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <p class="error">{{ field.label }}: {{ error }}</p>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                    <p class="error">{{ error }}</p>
+                {% endfor %}
+                </div>
+                <div class="register-login-button">
+                    <button type="submit">Login</button>
+                </div>
+            </form>
+        </div>
+        <p>Don't have an account? <a href="{% url 'register' %}">Create one here.</a></p>
+    </div>
+{% endblock %}

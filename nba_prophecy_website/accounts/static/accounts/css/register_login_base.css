@@ -17,7 +17,7 @@ html, body {
     background-attachment: fixed;
 }
 
-.form {
+.register-form {
     display: flex;
     flex-direction: column;
     align-items: center; 
@@ -29,39 +29,55 @@ html, body {
     border-radius: 5vh;
     padding: 20px;
 }
-.form .wrapper {
+.login-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    justify-content: center;
+    background: var(--element-background);
+    color: white;
+    width: 400px;
+    margin: auto;
+    border-radius: 5vh;
+    padding: 20px;
+}
+.register-form .wrapper {
     display: flex;
     align-items: center; 
     justify-content: center;
     gap: 100px;
     margin-top: 20px;
 }
-.form .left-part, .form .right-part {
+.login-form .wrapper div div {
+    margin-top: 20px;
+}
+.register-form .left-part, .register-form .right-part {
     display: flex;
     align-items: center; 
     flex-direction: column;
     justify-content: center;
     gap: 20px;
 }
-.form div div input {
+.register-form div div input, .login-form div div input {
     margin: 10px 0;
     height: 36px;
+    width: 200px;
     border-radius: 18px;
     padding-left: 10px;
 }
-.form div div label {
+.register-form div div label, .login-form div div label {
     font-size: 0.9em;
 }
-.form hr {
+.register-form hr, .login-form hr{
     width: 70%;
 }
-.form .register-button {
+.register-form .register-login-button, .login-form .register-login-button {
     display: flex;
     align-items: center; 
     justify-content: center;
     margin: 20px;
 }
-.form .register-button button {
+.register-form .register-login-button button, .login-form .register-login-button button {
     font-size: 17px;
     height: 36px;
     width: 100px;
@@ -69,14 +85,17 @@ html, body {
     background: var(--selected-element);
     color: black;
 }
-.form .register-button button:hover {
+.register-form .register-login-button button:hover, .login-form .register-login-button button:hover {
     cursor: pointer;
 }
-.form p {
+.register-form p, .login-form p{
     font-size: 13px;
 }
-.form p a {
+.register-form p a, .login-form p a {
     text-decoration: none;
     color: var(--selected-element);
+}
+.error {
+    color: #EE4B2B;
 }
 
