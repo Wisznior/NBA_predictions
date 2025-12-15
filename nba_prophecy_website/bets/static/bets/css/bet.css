@@ -1,0 +1,104 @@
+:root {
+    --dark-blue: #020122;
+    --yellow: #EDD382;
+}
+.bet-content {
+    display: flex;
+    flex-direction: column;
+}
+.bet-form-wrapper {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    background: var(--yellow);
+    border-radius: 20px;
+    margin: 10px 0;
+}
+.has-bet {
+    opacity: 0.7;
+}
+.bet-form-inside-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.bet-form-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.game-date {
+    display: flex;
+    background: var(--dark-blue);
+    margin-left: auto; 
+    border-radius: 10px;
+    padding: 10px;
+}
+.two-teams-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+.home-team-wrapper {
+    display: inline-flex;
+    align-items: center;
+    justify-content: right;
+    gap: 20px;
+    flex: 1;
+    background: var(--dark-blue);
+    padding: 20px;
+    border-radius: 10px;
+}
+.vs {
+    display: inline-flex;
+    color: var(--dark-blue)
+}
+.visitor-team-wrapper {
+    display: inline-flex;
+    align-items: center;
+    gap: 20px;
+    flex: 1;
+    background: var(--dark-blue);
+    padding: 20px;
+    border-radius: 10px;
+}
+.home-team-score-input input, .visitor-team-score-input input{
+    background: var(--yellow);
+    border-radius: 10px;
+    padding: 5px;
+}
+.make-bet-button {
+    display: flex;
+    justify-content: center;
+}
+.make-bet-button button {
+    background: var(--dark-blue);
+    padding: 10px;
+    border-radius: 10px;
+    color: white;
+    font-size: 17px;
+    width: 100px;
+}
+.make-bet-button button:hover {
+    cursor: pointer;
+}
+.make-bet-button button:disabled {
+    cursor: not-allowed;
+}
+
+.home-team-full-name-logo, .visitor-team-full-name-logo {
+    background: var(--yellow);
+    color: var(--dark-blue);
+    padding: 5px;
+    border-radius: 10px;
+}
+.home-team-full-name-logo img, .visitor-team-full-name-logo img{
+    width: 60px;
+}
+.bet-content h1 {
+    text-align: center;
+}
+.bet-content hr {
+    width: 70%;
+}

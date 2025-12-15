@@ -19,7 +19,7 @@ html, body {
     width: 80vw;
     margin: 20px auto;
     border-radius: 5vh;
-    padding: 0 20px;
+    padding: 20px 40px;
 }
 .navbar {
     display: flex;
@@ -81,9 +81,6 @@ div.active a:hover {
 }
 .link a:hover {
     text-decoration: underline;
-}
-.content {
-    padding: 20px;
 }
 #authors {
     padding: 10px;
