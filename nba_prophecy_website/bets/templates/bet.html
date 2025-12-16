@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}NBA Bets{% endblock %}
+
+{% load static %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'bets/css/bet.css' %}">
+{% endblock %}
+
+{% block content %}
+
+    <div class="bet-content">
+
+        <h1>Next Week's NBA Schedule</h1>
+        <hr>
+
+        {% for game in nba_schedule.data %}
+            <div class="bet-form-wrapper {% if game.has_bet %}has-bet{% endif %}">
+                <form method="POST">
+                    {% csrf_token %}
+
+                    <input type="hidden" name="game_id" value="{{ game.id }}">
+
+                    <div class="bet-form-inside-wrapper">
+                        <div class="bet-form-content-wrapper">
+                            <div class="game-date">
+                                {{ game.date }}
+                            </div>
+                            <div class="two-teams-wrapper">
+                                <div class="home-team-wrapper">
+                                    <div class="home-team-full-name">
+                                        {{ game.home_team.full_name }}
+                                    </div>
+                                    <div class="home-team-full-name-logo">
+                                        <img src="{% static 'bets/img/'|add:game.home_team.logo %}">
+                                    </div>
+                                    <div class="home-team-score-input">
+                                        {% if game.has_bet %}
+                                            <input type="number" name="home_score" min="0" max="999" disabled>
+                                        {% else %}
+                                            <input type="number" name="home_score" min="0" max="999">
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="vs">
+                                    <p>vs</p>
+                                </div>
+                                <div class="visitor-team-wrapper">
+                                    <div class="visitor-team-score-input">
+                                        {% if game.has_bet %}
+                                            <input type="number" name="visitor_score" min="0" max="999" disabled>
+                                        {% else %}
+                                            <input type="number" name="visitor_score" min="0" max="999">
+                                        {% endif %}
+                                    </div>
+                                    <div class="visitor-team-full-name-logo">
+                                        <img src="{% static 'bets/img/'|add:game.visitor_team.logo %}">
+                                    </div>
+                                    <div class="visitor-team-full-name">
+                                        {{ game.visitor_team.full_name }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="make-bet-button">
+                            {% if game.has_bet %}
+                                <button type="submit" disabled>Already Bet</button>
+                            {% else %}
+                                <button type="submit">Make Bet</button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </form>
+            </div>
+        {% endfor %}
+
+    </div>
+{% endblock %}

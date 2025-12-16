@@ -26,3 +26,19 @@ run: python manage.py runserver
 ### Updating database structure changes
 python manage.py makemigrations  
 python manage.py migrate
+
+### Managing Django Crontab
+django-crontab is a wrapper around Linux cron.
+
+Registering and updating list of jobs from settings.py CRONJOBS:
+python manage.py crontab add
+
+Listing os crontab jobs registered by django-crontab:
+python manage.py crontab show
+
+Removing all jobs registered by django-crontab:
+python manage.py crontab remove
+
+### Storing API Keys
+Write them at the file ".env" in the project root
+
