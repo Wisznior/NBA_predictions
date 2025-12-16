@@ -9,6 +9,13 @@ __pycache__/
 # The Odds API configuration
 config.py
 
+# Betting data files
+betting_data/parsed_data.json
+betting_data/parsed_data_new.json
+betting_data/full_data.json
+betting_data/full_data_new.json
+betting_data/relevant_data.json
+
 # Distribution / packaging
 .Python
 build/
