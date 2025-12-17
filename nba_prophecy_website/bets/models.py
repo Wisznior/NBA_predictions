@@ -30,8 +30,48 @@ class Bet(models.Model):
 
     home_score = models.PositiveSmallIntegerField()
     visitor_score = models.PositiveSmallIntegerField()
+    
     created_at = models.DateTimeField(auto_now_add=True)
 
+    
+    BET_STATUS_CHOICES = [
+        ('pending', 'Pending'),      
+        ('won', 'Won'),              
+        ('lost', 'Lost'),            
+    ]
+    status = models.CharField(
+        max_length=10, 
+        choices=BET_STATUS_CHOICES, 
+        default='pending'
+    )
+    
     class Meta:
         unique_together = ("user", "game")
+        ordering = ['-created_at'] 
+    
+    def __str__(self):
+        return f"{self.user.username} - {self.game.home_team.abbreviation} vs {self.game.visitor_team.abbreviation}"
+    
+    def check_if_won(self):
+        if self.game.home_team_score is None or self.game.visitor_team_score is None:
+            return None
+        
+        actual_home = self.game.home_team_score
+        actual_visitor = self.game.visitor_team_score
 
+        predicted_home = self.home_score
+        predicted_visitor = self.visitor_score
+        
+        if actual_home > actual_visitor:
+            return predicted_home > predicted_visitor
+        elif actual_visitor > actual_home:
+            return predicted_visitor > predicted_home
+        else:
+            return predicted_home == predicted_visitor
+    
+    def update_status(self):
+        if self.game.home_team_score is not None and self.game.visitor_team_score is not None:
+            won = self.check_if_won()
+            if won is not None:
+                self.status = 'won' if won else 'lost'
+                self.save()

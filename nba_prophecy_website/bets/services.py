@@ -3,6 +3,7 @@ import json
 from datetime import timedelta, datetime
 from django.conf import settings
 from .models import Team
+from django.utils import timezone
 
 
 def update_nba_schedule() -> None:
@@ -46,3 +47,22 @@ def get_or_create_team(team_data):
         }
     )
     return team
+
+def update_game_results_and_bets():
+    from .models import Game, Bet
+    
+    finished_games = Game.objects.filter(
+        home_team_score__isnull=False,
+        visitor_team_score__isnull=False
+    )
+    
+    updated_count = 0
+    for game in finished_games:
+        pending_bets = Bet.objects.filter(game=game, status='pending')
+        
+        for bet in pending_bets:
+            bet.update_status()
+            updated_count += 1
+    
+    print(f"Updated {updated_count} bets statuses")
+    return updated_count

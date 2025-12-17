@@ -1,0 +1,273 @@
+{% extends "base.html" %}
+
+{% block title %}Bets History - NBA Prophecy{% endblock %}
+
+{% load static %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'bets/css/bets_history.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="bets-history-content">
+        
+        <h1>Your Betting History</h1>
+        <hr>
+        
+        <div class="stats-section">
+            <div class="stat-card">
+                <div class="stat-label">Total Bets</div>
+                <div class="stat-value">{{ total_bets }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Won</div>
+                <div class="stat-value won">{{ won_count }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Lost</div>
+                <div class="stat-value lost">{{ lost_count }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Pending</div>
+                <div class="stat-value pending">{{ pending_count }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Win Rate</div>
+                <div class="stat-value">{{ win_percentage }}%</div>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-button active" onclick="showTab('all')">All Bets</button>
+            <button class="tab-button" onclick="showTab('pending')">Pending</button>
+            <button class="tab-button" onclick="showTab('won')">Won</button>
+            <button class="tab-button" onclick="showTab('lost')">Lost</button>
+        </div>
+
+        <div id="all-tab" class="tab-content active">
+            {% if all_bets %}
+                {% for bet in all_bets %}
+                    <div class="bet-card {{ bet.status }}">
+                        <div class="bet-header">
+                            <div class="bet-date">{{ bet.game.game_date|date:"F d, Y" }}</div>
+                            <div class="bet-status-badge {{ bet.status }}">
+                                {% if bet.status == 'pending' %}
+                                    ⏳ Pending
+                                {% elif bet.status == 'won' %}
+                                    ✓ Won
+                                {% else %}
+                                    ✗ Lost
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="bet-game-info">
+                            <div class="team-section">
+                                <img src="{% static 'bets/img/'|add:bet.home_logo %}" alt="Home Team">
+                                <div class="team-name">{{ bet.game.home_team.full_name }}</div>
+                            </div>
+                            
+                            <div class="scores-section">
+                                <div class="predicted-scores">
+                                    <div class="score-label">Your Prediction</div>
+                                    <div class="score-display">
+                                        <span class="score">{{ bet.home_score }}</span>
+                                        <span class="separator">-</span>
+                                        <span class="score">{{ bet.visitor_score }}</span>
+                                    </div>
+                                </div>
+                                
+                                {% if bet.game.home_team_score is not None %}
+                                    <div class="actual-scores">
+                                        <div class="score-label">Actual Score</div>
+                                        <div class="score-display">
+                                            <span class="score">{{ bet.game.home_team_score }}</span>
+                                            <span class="separator">-</span>
+                                            <span class="score">{{ bet.game.visitor_team_score }}</span>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="actual-scores pending-game">
+                                        <div class="score-label">Actual Score</div>
+                                        <div class="score-display">Game not played yet</div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="team-section">
+                                <img src="{% static 'bets/img/'|add:bet.visitor_logo %}" alt="Visitor Team">
+                                <div class="team-name">{{ bet.game.visitor_team.full_name }}</div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="no-bets">
+                    <p>No bets yet. Start making predictions!</p>
+                    <a href="{% url 'bet' %}" class="btn-primary">Make Your First Bet</a>
+                </div>
+            {% endif %}
+        </div>
+
+        <div id="pending-tab" class="tab-content">
+            {% if pending_bets %}
+                {% for bet in pending_bets %}
+                    <div class="bet-card pending">
+                        <div class="bet-header">
+                            <div class="bet-date">{{ bet.game.game_date|date:"F d, Y" }}</div>
+                            <div class="bet-status-badge pending">⏳ Pending</div>
+                        </div>
+                        
+                        <div class="bet-game-info">
+                            <div class="team-section">
+                                <img src="{% static 'bets/img/'|add:bet.home_logo %}" alt="Home Team">
+                                <div class="team-name">{{ bet.game.home_team.full_name }}</div>
+                            </div>
+                            
+                            <div class="scores-section">
+                                <div class="predicted-scores">
+                                    <div class="score-label">Your Prediction</div>
+                                    <div class="score-display">
+                                        <span class="score">{{ bet.home_score }}</span>
+                                        <span class="separator">-</span>
+                                        <span class="score">{{ bet.visitor_score }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="team-section">
+                                <img src="{% static 'bets/img/'|add:bet.visitor_logo %}" alt="Visitor Team">
+                                <div class="team-name">{{ bet.game.visitor_team.full_name }}</div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="no-bets">
+                    <p>No pending bets.</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <div id="won-tab" class="tab-content">
+            {% if won_bets %}
+                {% for bet in won_bets %}
+                    <div class="bet-card won">
+                        <div class="bet-header">
+                            <div class="bet-date">{{ bet.game.game_date|date:"F d, Y" }}</div>
+                            <div class="bet-status-badge won">✓ Won</div>
+                        </div>
+                        
+                        <div class="bet-game-info">
+                            <div class="team-section">
+                                <img src="{% static 'bets/img/'|add:bet.home_logo %}" alt="Home Team">
+                                <div class="team-name">{{ bet.game.home_team.full_name }}</div>
+                            </div>
+                            
+                            <div class="scores-section">
+                                <div class="predicted-scores">
+                                    <div class="score-label">Your Prediction</div>
+                                    <div class="score-display">
+                                        <span class="score">{{ bet.home_score }}</span>
+                                        <span class="separator">-</span>
+                                        <span class="score">{{ bet.visitor_score }}</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="actual-scores">
+                                    <div class="score-label">Actual Score</div>
+                                    <div class="score-display">
+                                        <span class="score">{{ bet.game.home_team_score }}</span>
+                                        <span class="separator">-</span>
+                                        <span class="score">{{ bet.game.visitor_team_score }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="team-section">
+                                <img src="{% static 'bets/img/'|add:bet.visitor_logo %}" alt="Visitor Team">
+                                <div class="team-name">{{ bet.game.visitor_team.full_name }}</div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="no-bets">
+                    <p>No won bets yet. Keep trying!</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <div id="lost-tab" class="tab-content">
+            {% if lost_bets %}
+                {% for bet in lost_bets %}
+                    <div class="bet-card lost">
+                        <div class="bet-header">
+                            <div class="bet-date">{{ bet.game.game_date|date:"F d, Y" }}</div>
+                            <div class="bet-status-badge lost">✗ Lost</div>
+                        </div>
+                        
+                        <div class="bet-game-info">
+                            <div class="team-section">
+                                <img src="{% static 'bets/img/'|add:bet.home_logo %}" alt="Home Team">
+                                <div class="team-name">{{ bet.game.home_team.full_name }}</div>
+                            </div>
+                            
+                            <div class="scores-section">
+                                <div class="predicted-scores">
+                                    <div class="score-label">Your Prediction</div>
+                                    <div class="score-display">
+                                        <span class="score">{{ bet.home_score }}</span>
+                                        <span class="separator">-</span>
+                                        <span class="score">{{ bet.visitor_score }}</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="actual-scores">
+                                    <div class="score-label">Actual Score</div>
+                                    <div class="score-display">
+                                        <span class="score">{{ bet.game.home_team_score }}</span>
+                                        <span class="separator">-</span>
+                                        <span class="score">{{ bet.game.visitor_team_score }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="team-section">
+                                <img src="{% static 'bets/img/'|add:bet.visitor_logo %}" alt="Visitor Team">
+                                <div class="team-name">{{ bet.game.visitor_team.full_name }}</div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="no-bets">
+                    <p>No lost bets. You're doing great!</p>
+                </div>
+            {% endif %}
+        </div>
+
+    </div>
+
+    <script>
+        function showTab(tabName) {
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            const buttons = document.querySelectorAll('.tab-button');
+            buttons.forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            const selectedTab = document.getElementById(tabName + '-tab');
+            if (selectedTab) {
+                selectedTab.classList.add('active');
+            }
+            
+            const clickedButton = event.target;
+            clickedButton.classList.add('active');
+        }
+    </script>
+{% endblock %}
