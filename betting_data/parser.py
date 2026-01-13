@@ -156,6 +156,7 @@ def parse(file_from, file_to):
 # data from 2 input files is saved in order to output file
 def merge(file_1, file_2, file_out):
     try:
+        data_out = []
         with open(file_1, 'r') as f:
             data_1 = json.load(f)
             logging.info(f"loading of file {file_1} succesful")
@@ -165,7 +166,10 @@ def merge(file_1, file_2, file_out):
             logging.info(f"loading of file {file_2} succesful")
 
         if isinstance(data_1, list) and isinstance(data_2, list):
-            data_out = data_1 + data_2
+            for r in data_1:
+                if not find_game(r["home_team"], r["away_team"], file_2):
+                    data_out.append(r)
+            data_out += data_2
         else:
             raise Exception("wrong data format")
             
