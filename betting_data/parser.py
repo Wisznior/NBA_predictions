@@ -9,7 +9,7 @@ def find_game(home_team, away_team, file_from = "parsed_data.json"):
 
     for record in data:
         if (record["home_team"] == home_team and record["away_team"] == away_team) or record["id"] == id:
-            logging.info(f"game found of {home_team} and {away_team}")    
+            logging.info(f"game found of {home_team} and {away_team}") 
             return record      
                             
     logging.info("game not found") 
@@ -26,10 +26,11 @@ def count_records(file_from):
     return count
 
 # probability calculated from bookmakers odds - returns a tuple of floats in range [0, 1]
-def implied_probability(home_team, away_team):
+def implied_probability(game):
     try:
-        game = find_game(home_team, away_team)
         if game:
+            home_team = game["home_team"]
+            away_team = game["away_team"]
             home = [1/i for i in game["h2h"]["home_price"].values()]
             away = [1/i for i in game["h2h"]["away_price"].values()]
             length = len(home)      
@@ -51,8 +52,7 @@ def write_probability(file_from = "parsed_data.json"):
         logging.info(f"loading of file {file_from} succesful")
 
     for g in data:
-        g["home_prob"], g["away_prob"] = implied_probability(g["home_team"], g["away_team"])
-
+        g["home_prob"], g["away_prob"] = implied_probability(g)
     with open(file_from, "w") as f:
         data = json.dump(data, f, indent=4)
         logging.info(f"saving to file {file_from} succesful")
@@ -115,13 +115,19 @@ def parse(file_from, file_to):
                 for q in j["markets"]:
                     buk = j["title"]
                     if q["key"] == "h2h":
-                        h2h["home_price"][buk] = q["outcomes"][0]["price"]
-                        h2h["away_price"][buk] = q["outcomes"][1]["price"]
+                        for gg in q["outcomes"]:
+                            if gg["name"] == home_team:
+                                h2h["home_price"][buk] = gg["price"]
+                            if gg["name"] == away_team:
+                                h2h["away_price"][buk] = gg["price"]
                     elif q["key"] == "spreads":
-                        spread["home_price"][buk] = q["outcomes"][0]["price"]
-                        spread["home_point"][buk] = q["outcomes"][0]["point"]
-                        spread["away_price"][buk] = q["outcomes"][1]["price"]
-                        spread["away_point"][buk] = q["outcomes"][1]["point"]
+                        for gg in q["outcomes"]:
+                            if gg["name"] == home_team:
+                                spread["home_price"][buk] = gg["price"]
+                                spread["home_point"][buk] = gg["point"]
+                            if gg["name"] == away_team:
+                                spread["away_price"][buk] = gg["price"]
+                                spread["away_point"][buk] = gg["point"]
                     elif q["key"] == "totals":
                         total["over_price"][buk] = q["outcomes"][0]["price"]
                         total["under_price"][buk] = q["outcomes"][1]["price"]
@@ -171,7 +177,27 @@ def merge(file_1, file_2, file_out):
         logging.warning(e)
         raise
 
+def calculate_expected_points(home_team, away_team, file_from = "parsed_data.json"):
+    logging.info("calc")
 
+    game = find_game(home_team, away_team, file_from)
+    home = 0
+    away = 0
+
+    total_dict = game["total"]["point"].values()
+    total = sum(total_dict) / len(total_dict) / 2.0
+
+    spread_dict = game["spread"]["home_point"].values()
+    spread = sum(abs(x) for x in spread_dict) / len(spread_dict) / 2.0
+
+    home = round(total + spread, 0)
+    away = round(total - spread, 0)
+
+    if (game["home_prob"] < game["away_prob"]):
+        home, away = away, home
+
+    logging.info(f"home: {home}, away: {away}")
+    return (home, away)
 
 if __name__ == "__main__":
     pass    
