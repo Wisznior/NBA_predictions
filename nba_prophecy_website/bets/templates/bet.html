@@ -1,79 +1,319 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}NBA Bets{% endblock %}
 
-{% load static %}
-
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'bets/css/bet.css' %}">
+    <style>
+        .messages {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 1000;
+            max-width: 400px;
+        }
+        
+        .alert {
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        .alert-success {
+            background: #69db7c;
+            color: #000;
+            border-left: 4px solid #51cf66;
+        }
+        
+        .alert-warning {
+            background: #ffd43b;
+            color: #000;
+            border-left: 4px solid #fab005;
+        }
+        
+        .alert-error {
+            background: #ff6b6b;
+            color: #fff;
+            border-left: 4px solid #f03e3e;
+        }
+
+        .bet-form-wrapper.value-bet {
+            border: 3px solid #69db7c;
+            box-shadow: 0 0 20px rgba(105, 219, 124, 0.3);
+            background: linear-gradient(135deg, rgba(105, 219, 124, 0.05) 0%, rgba(0,0,0,0) 100%);
+        }
+        
+        .value-bet-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #69db7c;
+            color: #000;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            z-index: 10;
+        }
+
+        .game-date {
+            color: #ffffff !important; 
+            font-weight: bold !important;
+            background: #000;
+            padding: 4px 12px;
+            border-radius: 4px;
+        }
+
+        .analysis-container {
+            margin-top: 15px;
+            padding: 15px;
+            background: #000000;
+            border-radius: 10px;
+            border: 1px solid #333;
+        }
+
+        .analysis-header {
+            font-size: 0.7rem;
+            color: #666;
+            text-align: center;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-bottom: 1px solid #222;
+            padding-bottom: 5px;
+        }
+
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: 1fr 1px 1fr;
+            gap: 15px;
+            align-items: start;
+        }
+
+        .divider {
+            background: #444;
+            width: 1px;
+            height: 100%;
+            min-height: 100px;
+        }
+
+        .data-column {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-height: 100px;
+        }
+
+        .data-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            min-height: 24px;
+        }
+
+        .label-text {
+            font-size: 0.65rem;
+            color: #888;
+            text-transform: uppercase;
+        }
+
+        .val-ml {
+            color: #4dabf7;
+            font-weight: bold;
+            font-size: 0.95rem;
+        }
+
+        .val-bookie {
+            color: #ff6b6b;
+            font-weight: bold;
+            font-size: 0.95rem;
+        }
+
+        .val-score {
+            color: #ffa94d;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .val-odds {
+            color: #a9e34b;
+            font-weight: bold;
+            font-size: 0.95rem;
+        }
+
+        .make-bet-button button:disabled {
+            background-color: #222 !important;
+            color: #555 !important;
+            border: 1px solid #333 !important;
+        }
+
+        .data-column.highlight {
+            background: rgba(105, 219, 124, 0.05);
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid rgba(105, 219, 124, 0.2);
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
-
-    <div class="bet-content">
-
-        <h1>Next Week's NBA Schedule</h1>
-        <hr>
-
-        {% for game in nba_schedule.data %}
-            <div class="bet-form-wrapper {% if game.has_bet %}has-bet{% endif %}">
-                <form method="POST">
-                    {% csrf_token %}
-
-                    <input type="hidden" name="game_id" value="{{ game.id }}">
-
-                    <div class="bet-form-inside-wrapper">
-                        <div class="bet-form-content-wrapper">
-                            <div class="game-date">
-                                {{ game.date }}
-                            </div>
-                            <div class="two-teams-wrapper">
-                                <div class="home-team-wrapper">
-                                    <div class="home-team-full-name">
-                                        {{ game.home_team.full_name }}
-                                    </div>
-                                    <div class="home-team-full-name-logo">
-                                        <img src="{% static 'bets/img/'|add:game.home_team.logo %}">
-                                    </div>
-                                    <div class="home-team-score-input">
-                                        {% if game.has_bet %}
-                                            <input type="number" name="home_score" min="0" max="999" disabled>
-                                        {% else %}
-                                            <input type="number" name="home_score" min="0" max="999">
-                                        {% endif %}
-                                    </div>
-                                </div>
-                                <div class="vs">
-                                    <p>vs</p>
-                                </div>
-                                <div class="visitor-team-wrapper">
-                                    <div class="visitor-team-score-input">
-                                        {% if game.has_bet %}
-                                            <input type="number" name="visitor_score" min="0" max="999" disabled>
-                                        {% else %}
-                                            <input type="number" name="visitor_score" min="0" max="999">
-                                        {% endif %}
-                                    </div>
-                                    <div class="visitor-team-full-name-logo">
-                                        <img src="{% static 'bets/img/'|add:game.visitor_team.logo %}">
-                                    </div>
-                                    <div class="visitor-team-full-name">
-                                        {{ game.visitor_team.full_name }}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="make-bet-button">
-                            {% if game.has_bet %}
-                                <button type="submit" disabled>Already Bet</button>
-                            {% else %}
-                                <button type="submit">Make Bet</button>
-                            {% endif %}
-                        </div>
-                    </div>
-                </form>
+<!--message-->
+{% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
             </div>
         {% endfor %}
-
     </div>
+    <script>
+        setTimeout(function() {
+            document.querySelectorAll('.alert').forEach(function(el) {
+                el.style.animation = 'slideOut 0.3s ease-out';
+                setTimeout(function() { el.remove(); }, 300);
+            });
+        }, 3000);
+    </script>
+    <style>
+        @keyframes slideOut {
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+    </style>
+{% endif %}
+
+<div class="bet-content">
+    <h1>NBA Predictions & Betting</h1>
+    <hr>
+
+    {% for game in display_games %}
+        <div class="bet-form-wrapper {% if game.has_bet %}has-bet{% endif %} {% if game.is_value_bet %}value-bet{% endif %}" style="position: relative;">
+            
+            {% if game.is_value_bet %}
+                <div class="value-bet-badge">⭐ VALUE BET</div>
+            {% endif %}
+            
+            <form method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="game_id" value="{{ game.id }}">
+                <input type="hidden" name="home_team_name" value="{{ game.home_team.full_name }}">
+                <input type="hidden" name="away_team_name" value="{{ game.visitor_team.full_name }}">
+                <input type="hidden" name="game_date" value="{{ game.date }}">
+
+                <div class="bet-form-inside-wrapper">
+                    <div class="bet-form-content-wrapper">
+                        <div class="game-date">
+                            {{ game.date|slice:":10" }}
+                        </div>
+                        
+                        <div class="two-teams-wrapper">
+                            <div class="home-team-wrapper">
+                                <div class="home-team-full-name">{{ game.home_team.full_name }}</div>
+                                <div class="home-team-full-name-logo">
+                                    <img src="{% static 'bets/img/'|add:game.home_team.logo %}" alt="{{ game.home_team.full_name }}">
+                                </div>
+                                <div class="home-team-score-input">
+                                    <input type="number" name="home_score" min="0" max="999" 
+                                           {% if game.has_bet %}disabled{% endif %} 
+                                           value="{{ game.home_team.predicted_score }}"
+                                           required>
+                                </div>
+                            </div>
+
+                            <div class="vs"><p>vs</p></div>
+
+                            <div class="visitor-team-wrapper">
+                                <div class="visitor-team-score-input">
+                                    <input type="number" name="visitor_score" min="0" max="999" 
+                                           {% if game.has_bet %}disabled{% endif %} 
+                                           value="{{ game.visitor_team.predicted_score }}"
+                                           required>
+                                </div>
+                                <div class="visitor-team-full-name-logo">
+                                    <img src="{% static 'bets/img/'|add:game.visitor_team.logo %}" alt="{{ game.visitor_team.full_name }}">
+                                </div>
+                                <div class="visitor-team-full-name">{{ game.visitor_team.full_name }}</div>
+                            </div>
+                        </div>
+
+                        <div class="analysis-container">
+                            <div class="analysis-header">Prediction & Odds Analysis</div>
+                            <div class="analysis-grid">
+                                <div class="data-column {% if game.home_team.is_value %}highlight{% endif %}">
+                                    <div class="data-row">
+                                        <span class="label-text">ML Model</span>
+                                        <span class="val-ml">{{ game.home_team.ml_prob }}%</span>
+                                    </div>
+                                    <div class="data-row">
+                                        <span class="label-text">Bookmaker</span>
+                                        <span class="val-bookie">{{ game.home_team.bookie_prob }}%</span>
+                                    </div>
+                                    <div class="data-row">
+                                        <span class="label-text">Odds</span>
+                                        <span class="val-odds">{{ game.home_team.odds }}</span>
+                                    </div>
+                                    <div class="data-row">
+                                        <span class="label-text">Predicted</span>
+                                        <span class="val-score">{{ game.home_team.predicted_score }}</span>
+                                    </div>
+                                </div>
+
+                                <div class="divider"></div>
+
+                                <div class="data-column {% if game.visitor_team.is_value %}highlight{% endif %}">
+                                    <div class="data-row">
+                                        <span class="label-text">ML Model</span>
+                                        <span class="val-ml">{{ game.visitor_team.ml_prob }}%</span>
+                                    </div>
+                                    <div class="data-row">
+                                        <span class="label-text">Bookmaker</span>
+                                        <span class="val-bookie">{{ game.visitor_team.bookie_prob }}%</span>
+                                    </div>
+                                    <div class="data-row">
+                                        <span class="label-text">Odds</span>
+                                        <span class="val-odds">{{ game.visitor_team.odds }}</span>
+                                    </div>
+                                    <div class="data-row">
+                                        <span class="label-text">Predicted</span>
+                                        <span class="val-score">{{ game.visitor_team.predicted_score }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="make-bet-button">
+                        {% if game.has_bet %}
+                            <button type="button" disabled>Already Bet</button>
+                        {% else %}
+                            <button type="submit">Make Bet</button>
+                        {% endif %}
+                    </div>
+                </div>
+            </form>
+        </div>
+    {% empty %}
+        <div style="text-align: center; padding: 50px; color: #666;">
+            <h2>No games available</h2>
+        </div>
+    {% endfor %}
+</div>
 {% endblock %}
