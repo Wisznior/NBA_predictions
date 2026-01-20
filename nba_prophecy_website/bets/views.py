@@ -1,9 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
-from django.http import Http404
 from django.contrib import messages
-from .services import get_nba_schedule, get_or_create_team
+from .services import get_nba_schedule, get_or_create_team, update_game_results_and_bets
 from .constants import TEAM_LOGOS
 from .forms import BetForm
 from .models import Bet, Game
@@ -78,6 +77,8 @@ def find_api_match(home_team, away_team, api_games):
 
 @login_required
 def bets_view(request):
+    update_game_results_and_bets()
+    
     if request.method == "POST":
         game_id = request.POST.get("game_id")
         home_score = request.POST.get("home_score")
@@ -93,14 +94,13 @@ def bets_view(request):
                 with transaction.atomic():
                     nba_schedule = get_nba_schedule()
                     api_games = nba_schedule.get("data", [])
-                    
+
                     api_match = find_api_match(home_team_name, away_team_name, api_games)
                     
                     if api_match:
                         home_team_data = api_match["home_team"]
                         visitor_team_data = api_match["visitor_team"]
-                        api_date = api_match.get("date", game_date)
-                        game_datetime_final = parse_game_datetime(api_date)
+                        game_datetime_final = parse_game_datetime(api_match.get("date", game_date))
                         season = api_match.get("season", 2024)
                     else:
                         home_team_data = {
@@ -126,26 +126,20 @@ def bets_view(request):
                     
                     home_team = get_or_create_team(home_team_data)
                     visitor_team = get_or_create_team(visitor_team_data)
-                    print(f"Teams: {home_team} vs {visitor_team}")
+                    
+                    game_defaults = {
+                        "home_team": home_team,
+                        "visitor_team": visitor_team,
+                        "season": season,
+                        "game_date": game_datetime_final,
+                    }
                     
                     from django.db import connection
                     with connection.cursor() as cursor:
                         cursor.execute("PRAGMA table_info(bets_game)")
                         columns = cursor.fetchall()
-                        
-                    game_defaults = {
-                        "home_team": home_team,
-                        "visitor_team": visitor_team,
-                        "season": season,
-                    }
-                    
-                    if any(col[1] == 'game_date' for col in columns):
-                        game_defaults["game_date"] = game_datetime_final
-                    
-                    if any(col[1] == 'datetime' for col in columns):
-                        game_defaults["datetime"] = game_datetime_final
-                    
-                    print(f"Game defaults: {game_defaults}")
+                        if any(col[1] == 'datetime' for col in columns):
+                            game_defaults["datetime"] = game_datetime_final
                     
                     game, created = Game.objects.get_or_create(
                         game_api_id=game_id,
@@ -154,29 +148,25 @@ def bets_view(request):
                     
                     existing_bet = Bet.objects.filter(user=request.user, game=game).first()
                     if existing_bet:
-                        print("Bet already exists")
                         messages.warning(request, "You have already bet on this game!")
                     else:
-                        bet = Bet.objects.create(
+                        Bet.objects.create(
                             user=request.user,
                             game=game,
                             home_score=int(home_score),
                             visitor_score=int(visitor_score),
                             status='pending'
                         )
-                        print(f"Bet created: ID={bet.id}, status={bet.status}")
-                        messages.success(request, f"Bet placed successfully for {home_team_name} vs {away_team_name}!")
+                        messages.success(request, f"Bet placed successfully!")
                     
                 return redirect("bet")
-                
             except Exception as e:
-                print(f"ERROR: {e}")
+                print(f"error creating bet: {e}")
                 import traceback
                 traceback.print_exc()
-                messages.error(request, f"Error: {str(e)}")
+                messages.error(request, f"error: {str(e)}")
                 return redirect("bet")
         else:
-            print("Missing required fields")
             messages.error(request, "Missing required fields")
             return redirect("bet")
     
@@ -293,6 +283,8 @@ def bets_view(request):
 
 @login_required
 def bets_history_view(request):
+    update_game_results_and_bets()
+    
     user_bets = Bet.objects.filter(user=request.user).select_related(
         'game', 'game__home_team', 'game__visitor_team'
     ).order_by('-created_at')

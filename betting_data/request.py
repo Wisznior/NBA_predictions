@@ -1,6 +1,5 @@
 import requests
 import json
-import config
 import logging
 
 def request_odds_api(file_out = "full_data_new.json"):
@@ -8,7 +7,8 @@ def request_odds_api(file_out = "full_data_new.json"):
         with open("parameters.json", "r") as f:
             params = json.load(f)
 
-        API_KEY = config.API_KEY
+        API_KEY = '3a7f7cb3251aafc0c8bc172006a0aca8'
+
         SPORT = params["request"]["sport"]
         REGION = params["request"]["region"]
         MARKET = params["request"]["market"]
