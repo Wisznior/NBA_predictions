@@ -6,6 +6,7 @@ import joblib
 from datetime import datetime
 from master_predict_all import get_team_id, get_stats_for_one_team
 import sqlite3
+import numpy as np
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(BASE_DIR, "data")
@@ -47,9 +48,18 @@ def load_betting_data():
         print(f"Błąd podczas wczytywania kursów: {e}")
         return []
 
+def handle_missing_values(input_df, feature_columns):
+    if input_df.isnull().any().any():
+        for col in input_df.columns:
+            if input_df[col].isnull().any():
+                input_df[col].fillna(0, inplace = True)
+    
+    for col in feature_columns:
+        if col not in input_df.columns:
+            input_df[col]=0
+    return input_df[feature_columns]
 
 def predict_game_probabilities(home_team_name, away_team_name):
-    """Predykcja prawdopodobieństw wygranej"""
     if not os.path.exists(DB_PATH) or not os.path.exists(WINNER_MODEL_PATH):
         return None
     
@@ -84,6 +94,11 @@ def predict_game_probabilities(home_team_name, away_team_name):
             model_input[f'away_{key}'] = value
         
         input_df = pd.DataFrame([model_input], columns=feature_columns)
+        input_df = handle_missing_values(input_df, feature_columns)
+        
+        if input_df.isnull().any().any():
+            return None
+
         probabilities = model.predict_proba(input_df)[0]
         
         return {
@@ -98,7 +113,6 @@ def predict_game_probabilities(home_team_name, away_team_name):
 
 
 def predict_game_scores(home_team_name, away_team_name):
-    """NOWE: Predykcja wyników meczów"""
     if not os.path.exists(DB_PATH):
         return None
     if not os.path.exists(HOME_SCORE_MODEL_PATH) or not os.path.exists(AWAY_SCORE_MODEL_PATH):
@@ -141,9 +155,12 @@ def predict_game_scores(home_team_name, away_team_name):
         
         input_df = pd.DataFrame([model_input])
         
-        home_input_df = input_df.reindex(columns=home_feature_columns, fill_value=0)
-        away_input_df = input_df.reindex(columns=away_feature_columns, fill_value=0)
-        
+        home_input_df = handle_missing_values(input_df.copy(), home_feature_columns)
+        away_input_df = handle_missing_values(input_df.copy(), away_feature_columns)
+
+        if home_input_df.isnull().any().any() or away_input_df.isnull().any().any():
+            return None
+
         predicted_home_score = home_score_model.predict(home_input_df)[0]
         predicted_away_score = away_score_model.predict(away_input_df)[0]
         
@@ -203,10 +220,8 @@ def compare_predictions_with_odds():
     for i, game in enumerate(betting_data, 1):
         print(f"\n[{i}/{len(betting_data)}] {game['home_team']} vs {game['away_team']}")
         
-        # Predykcja prawdopodobieństw
         ml_predictions = predict_game_probabilities(game['home_team'], game['away_team'])
         
-        # NOWE: Predykcja wyników
         score_predictions = predict_game_scores(game['home_team'], game['away_team'])
         
         if not ml_predictions:
@@ -248,7 +263,6 @@ def compare_predictions_with_odds():
             'away_expected_value': round(away_value['expected_value'], 2),
         }
         
-        # NOWE: Dodaj predicted scores
         if score_predictions:
             game_result['predicted_home_score'] = score_predictions['predicted_home_score']
             game_result['predicted_away_score'] = score_predictions['predicted_away_score']
