@@ -6,6 +6,7 @@ python3 -m venv venv
 
 To activate:  
 .\venv\Scripts\Activate.ps1 ( Windows )
+
 source venv/bin/activate ( Linux )
 
 To deactivate:  
@@ -24,6 +25,7 @@ pip freeze > requirements.txt
 ./script.ps1 ( Windows )
 
 chmod +x script.sh
+
 ./script.sh ( Linux )
 
 ### Starting server
