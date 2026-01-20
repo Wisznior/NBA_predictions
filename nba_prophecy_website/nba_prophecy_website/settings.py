@@ -45,7 +45,6 @@ INSTALLED_APPS = [
     'home',
     'accounts',
     'bets',
-    'predictions',
 ]
 
 MIDDLEWARE = [

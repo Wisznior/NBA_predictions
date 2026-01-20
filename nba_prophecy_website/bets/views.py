@@ -277,7 +277,8 @@ def bets_view(request):
 
     return render(request, "bet.html", {
         "display_games": display_games, 
-        "form": BetForm()
+        "form": BetForm(),
+        "active": "bet"
     })
 
 
