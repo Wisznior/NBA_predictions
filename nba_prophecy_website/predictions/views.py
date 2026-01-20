@@ -15,7 +15,7 @@ sys.path.insert(0, BASE_DIR)
 
 from bets.services import get_nba_schedule
 from bets.constants import TEAM_LOGOS
-from predict import get_team_id, get_stats_for_one_team
+from master_predict_all import get_team_id, get_stats_for_one_team
 
 
 def get_score_prediction(home_team, away_team):

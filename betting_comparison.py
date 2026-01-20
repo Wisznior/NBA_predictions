@@ -4,7 +4,7 @@ import os
 import sys
 import joblib
 from datetime import datetime
-from predict import get_team_id, get_stats_for_one_team
+from master_predict_all import get_team_id, get_stats_for_one_team
 import sqlite3
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
