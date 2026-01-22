@@ -1,9 +1,27 @@
 {% extends "base.html" %}
 
+{% load static %}
 {% block title %}NBA Prophecy{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'home/css/home.css' %}">
+{% endblock %}
 
 {% block content %}
 
-    <h1>Welcome to NBA Prophecy</h1>
+    <div class="home-wrapper">
+        <div class="box-wrapper">
+            <h1>Welcome to NBA Prophecy</h1>
+        </div>
+        <div class="box-wrapper">
+            <p>With this app you are able to make bets on all nba matches in the "Make Bet" section 
+                and then browser your predictions in the "Your Bets History" section. After the match was 
+                performed you can check whether your predictions were correct. If your foretelling abilities 
+                are not in shape you are welcome to take a look what bookmaker and our custom model is thinking 
+                about it. All functionalities are only for the registered and logged in users. If you are interested 
+                we encourage you to go to "Login" or "Register" section. 
+            </p>
+        </div>
+    </div>
 
 {% endblock %}

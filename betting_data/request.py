@@ -1,14 +1,21 @@
 import requests
 import json
-import config
 import logging
+import os
+from dotenv import load_dotenv
 
 def request_odds_api(file_out = "full_data_new.json"):
     try:
+        load_dotenv()
+
         with open("parameters.json", "r") as f:
             params = json.load(f)
 
-        API_KEY = config.API_KEY
+        API_KEY = os.getenv("ODDS_API_KEY")
+
+        if not API_KEY:
+            raise ValueError("Nie znaleziono API KEY w pliku .env")
+
         SPORT = params["request"]["sport"]
         REGION = params["request"]["region"]
         MARKET = params["request"]["market"]

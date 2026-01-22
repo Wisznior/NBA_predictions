@@ -19,17 +19,14 @@
         </div>
     </div>
     <div class="nav-center">
-        <div class=" link {% if active == 'future' %}active{% endif %}">
-            <a href="{% url 'future' %}" >Predictions</a>
-        </div>
-        <div class=" link {% if active == 'history' %}active{% endif %}">
-            <a href="{% url 'history' %}" >Predictions History</a>
+        <div class=" link {% if active == 'home' %}active{% endif %}">
+            <a href="{% url 'home' %}" >Home</a>
         </div>
         <div class=" link {% if active == 'bet' %}active{% endif %}">
-            <a href="{% url 'bet' %}" >Bet</a>
+            <a href="{% url 'bet' %}" >Make Bet</a>
         </div>
         <div class=" link {% if active == 'bets_history' %}active{% endif %}">
-            <a href="{% url 'bets_history' %}" >Bets History</a>
+            <a href="{% url 'bets_history' %}" >Your Bets History</a>
         </div>
     </div>
     <div class="nav-right">

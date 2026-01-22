@@ -22,5 +22,4 @@ urlpatterns = [
     path("", include("home.urls")),
     path("accounts/", include("accounts.urls")),
     path("bets/", include("bets.urls")),
-    path("predictions/", include("predictions.urls"))
 ]
