@@ -76,14 +76,6 @@ def _get_stats_for_one_team_for_training(team_id, game_date, all_games_dataframe
     combined_pts_allowed = pd.concat([home_pts_allowed, away_pts_allowed])
     calculated_averages['pts_allowed_roll_avg'] = combined_pts_allowed.mean()
         
-    home_pts = last_n_games[last_n_games['home_team_id'] == team_id]['home_pts']
-    away_pts = last_n_games[last_n_games['away_team_id'] == team_id]['away_pts']
-
-    home_diff = home_pts - home_pts_allowed
-    away_diff = away_pts - away_pts_allowed
-    combined_pts_diff = pd.concat([home_diff, away_diff])
-    calculated_averages['pts_differential_roll_avg'] = combined_pts_diff.mean()
-        
     return calculated_averages
 
 def generate_winner_features(window_size=GAMES_TO_LOOK_BACK):
@@ -137,7 +129,7 @@ def generate_winner_features(window_size=GAMES_TO_LOOK_BACK):
     team_stats_df = pd.concat([home_df, away_df]).sort_values(['team_id', 'game_date'])
     team_stats_df['pts_differential'] = team_stats_df['pts'] - team_stats_df['pts_allowed']
 
-    ROLLING_STATS_TO_CALCULATE = STATS_COLS + ['pts_allowed', 'pts_differential']
+    ROLLING_STATS_TO_CALCULATE = STATS_COLS + ['pts_allowed']
 
     rolling_stats = team_stats_df.groupby('team_id')[ROLLING_STATS_TO_CALCULATE].rolling(window=window_size, min_periods=1).mean().shift(1)
     rolling_stats.columns = [f'{col}_roll_avg' for col in ROLLING_STATS_TO_CALCULATE]
@@ -157,8 +149,7 @@ def generate_winner_features(window_size=GAMES_TO_LOOK_BACK):
     feature_cols = ([f'home_{col}_roll_avg' for col in STATS_COLS] +
                     [f'away_{col}_roll_avg' for col in STATS_COLS] +
                     ['home_pts_allowed_roll_avg', 'away_pts_allowed_roll_avg'] +
-                    ['home_team_days_rest', 'away_team_days_rest'] +
-                    ['home_pts_differential_roll_avg', 'away_pts_differential_roll_avg'])
+                    ['home_team_days_rest', 'away_team_days_rest'])
     final_df = final_df[['game_id', 'game_date', 'outcome'] + feature_cols].copy()
     final_df.dropna(inplace=True)
 
@@ -387,7 +378,7 @@ def plot_xgboost_score_models_performance(X, y_home, y_away):
 
 
 if __name__ == "__main__":
-    LOGGER.info("Starting consolidated model performance plotting script.")
+    LOGGER.info("Starting model performance plotting script.")
 
     winner_df = None
     if not os.path.exists(WINNER_FEATURES_PATH):
@@ -422,4 +413,4 @@ if __name__ == "__main__":
     plot_xgboost_winner_model_performance(X_winner, y_winner)
     plot_xgboost_score_models_performance(X_score, y_home_score, y_away_score)
 
-    LOGGER.info("Consolidated model performance plotting finished. All plots generated in the 'logs' directory.")
+    LOGGER.info("Model performance plotting finished. All plots generated in the 'logs' directory.")
