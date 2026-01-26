@@ -87,12 +87,27 @@ try {
             if ($LASTEXITCODE -eq 0) {
                 Write-Info "Porównanie z kursami zakończone"
             } else {
-                Write-Warning-Custom "Błąd podczas porównania z kursami (mo"
+                Write-Warning-Custom "Błąd podczas porównania z kursami"
             }
         } catch {
             Write-Warning-Custom "Błąd podczas porównania z kursami"
         }
     }
+
+    Write-Host ""
+    Write-Info "Krok 5: Aktualizacja wyników meczów i zakładów"
+    Push-Location nba_prophecy_website
+    try {
+        python manage.py update_bets
+        if ($LASTEXITCODE -eq 0) {
+            Write-Info "Zakłady zaktualizowane"
+        } else {
+            Write-Warning-Custom "Błąd podczas aktualizacji zakładów"
+        }
+    } catch {
+        Write-Warning-Custom "Błąd podczas aktualizacji zakładów: $_"
+    }        
+    Pop-Location
 
     Write-Host ""
     Write-Host "--------------------"

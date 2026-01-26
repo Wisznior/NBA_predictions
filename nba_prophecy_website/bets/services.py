@@ -133,18 +133,17 @@ def update_finished_games_from_ml_db():
         return 0
     
     updated_count = 0
-
     games_without_scores = Game.objects.filter(
         home_team_score__isnull=True,
         visitor_team_score__isnull=True
     )
-        
+    
     for game in games_without_scores:
         home_name = game.home_team.full_name
         away_name = game.visitor_team.full_name
-        game_date = game.game_date
-            
-        result = get_game_result_from_ml_db(home_name, away_name, game_date)
+        current_game_date = game.game_date 
+                    
+        result = get_game_result_from_ml_db(home_name, away_name, current_game_date)
         
         if result and result['home_score'] is not None and result['away_score'] is not None:
             game.home_team_score = result['home_score']
@@ -154,7 +153,6 @@ def update_finished_games_from_ml_db():
             updated_count += 1
         
     return updated_count
-
 
 def update_finished_games_from_api():    
     schedule_data = get_nba_schedule()
@@ -212,8 +210,7 @@ def update_bets_status():
             bet.update_status()
             updated_count += 1
             
-            status_emoji = "🎉" if bet.status == 'won' else "😞"
-            print(f"  {status_emoji} Zakład {bet.user.username}: {bet.status}")
+            print(f"Zakład {bet.user.username}: {bet.status}")
     return updated_count
 
 
