@@ -52,7 +52,7 @@ def handle_missing_values(input_df, feature_columns):
     if input_df.isnull().any().any():
         for col in input_df.columns:
             if input_df[col].isnull().any():
-                input_df[col].fillna(0, inplace = True)
+                input_df[col] = input_df[col].fillna(0)
     
     for col in feature_columns:
         if col not in input_df.columns:
