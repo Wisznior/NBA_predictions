@@ -75,9 +75,21 @@ try {
 
     Write-Host ""
     Write-Info "Krok 3: Trenowanie modeli ML"
-    python master_train_pipeline.py
-    if ($LASTEXITCODE -ne 0) { throw "Błąd podczas trenowania" }
-    Write-Info "Modele ML wytrenowane"
+    
+    $modelsExist = (Test-Path "models\winner_model.joblib") -and 
+                   (Test-Path "models\home_score_model.joblib") -and 
+                   (Test-Path "models\away_score_model.joblib") -and
+                   (Test-Path "models\xgb_winner_model.joblib") -and
+                   (Test-Path "models\xgb_home_score_model.joblib") -and
+                   (Test-Path "models\xgb_away_score_model.joblib")
+    
+    if ($modelsExist){
+        Write-Info "Modele już istnieja"
+    } else {
+        python master_train_pipeline.py
+        if ($LASTEXITCODE -ne 0) { throw "Błąd podczas trenowania" }
+        Write-Info "Modele ML wytrenowane"
+    }
 
     Write-Host ""
     Write-Info "Krok 4: Porównanie z kursami bukmacherskimi"
