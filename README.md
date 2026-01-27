@@ -41,4 +41,5 @@ python manage.py runserver
 
 ### Storing API Keys
 Write them at the file ".env" in the project root
+
 ODDS_API_KEY = *your_api_key*
